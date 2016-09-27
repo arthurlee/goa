@@ -2,13 +2,22 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 )
 
 func handleHello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "[Goa] Hello, world!")
+	w.Header().Set("Content-Type", "application/json")
+
+	person := struct {
+		Name string
+		Age  int
+	}{"Tom", 12}
+
+	data, _ := json.Marshal(person)
+	fmt.Fprintln(w, string(data))
 }
 
 func main() {
