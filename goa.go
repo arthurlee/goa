@@ -12,8 +12,8 @@ func handleHello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	person := struct {
-		Name string
-		Age  int
+		Name string `json:"name"`
+		Age  int    `json:"age"`
 	}{"Tom", 12}
 
 	json.NewEncoder(w).Encode(person)
