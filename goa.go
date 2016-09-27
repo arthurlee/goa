@@ -3,7 +3,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	//	"fmt"
 	"log"
 	"net/http"
 )
@@ -16,8 +16,7 @@ func handleHello(w http.ResponseWriter, r *http.Request) {
 		Age  int
 	}{"Tom", 12}
 
-	data, _ := json.Marshal(person)
-	fmt.Fprintln(w, string(data))
+	json.NewEncoder(w).Encode(person)
 }
 
 func main() {
