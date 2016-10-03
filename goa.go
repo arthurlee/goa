@@ -6,8 +6,11 @@ import (
 	//	"fmt"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
 var g_db *sql.DB = nil
@@ -21,20 +24,6 @@ func handleHello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(person)
 }
-
-// func handleCourseList(w http.ResponseWriter, r *http.Request) {
-// 	courses := []struct {
-// 		CourseId      int    `json:"courseId"`
-// 		CourseName    string `json:"courseName"`
-// 		CourseSummary string `json:"courseSummary"`
-// 	}{
-// 		{1, "Math", "Math for grade 6"},
-// 		{2, "Art", "Art for grade 6"},
-// 	}
-//
-// 	w.Header().Set("Content-Type", "application/json")
-// 	json.NewEncoder(w).Encode(courses)
-// }
 
 type GoaBaseRes struct {
 	Code    string `json:"code"`
@@ -95,21 +84,72 @@ func handleCourseList(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resCourseList)
 }
 
-func main() {
-	// open the database
+type DatabaseConfig struct {
+	Type string `yaml:"type"`
+	Url  string `yaml:"url"`
+}
 
-	db, err := sql.Open("mysql", "goa:Goa$1234@/goa_college")
+type Config struct {
+	Database DatabaseConfig `yaml:"database"`
+}
+
+func main() {
+	// config yaml file
+	filename, err := filepath.Abs("./goa.yaml")
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
+
+	log.Println("filename = ", filename)
+
+	yamlContent, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	log.Println("yaml content = ", string(yamlContent))
+
+	var config Config
+	err = yaml.Unmarshal(yamlContent, &config)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	if len(config.Database.Type) == 0 {
+		log.Fatal("config file error: no database type defined")
+		return
+	}
+
+	if len(config.Database.Url) == 0 {
+		log.Fatal("config file error: no database url defined")
+		return
+	}
+
+	log.Println("database type = ", config.Database.Type)
+	log.Println("database url = ", config.Database.Url)
+
+	// open the database
+
+	//db, err_db := sql.Open("mysql", "goa:Goa$1234@/goa_college")
+	db, err_db := sql.Open(config.Database.Type, config.Database.Url)
+	if err_db != nil {
+		log.Fatal(err)
+		return
+	}
 	defer db.Close()
+
+	log.Println("ping database ...")
 
 	err = db.Ping()
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
+
+	log.Println("database ok")
 
 	g_db = db
 

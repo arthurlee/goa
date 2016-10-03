@@ -1,0 +1,4 @@
+---
+database:
+  type: mysql
+  url: goa:Goa$1234@/goa_college
