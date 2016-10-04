@@ -39,29 +39,24 @@ func isGoaApp(folder string) bool {
 	return fileutil.IsFile(cfgFilePath)
 }
 
-// guess the app root path
-func guessAppRootPath() (string, error) {
-	// exec directory
-	folder, err := osext.ExecutableFolder()
+func checkAppRoot(folder string, err error) (string, error) {
 	if err == nil {
 		if isGoaApp(folder) {
 			return folder, nil
 		}
-
-		// working directory
-		folder, err = os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-			return "", err
-		}
-
-		if isGoaApp(folder) {
-			return folder, nil
-		}
-
 		return "", errors.New("Cannot detect the goa app!")
 	} else {
+		// it rarely happened
 		log.Fatal(err)
 		return "", err
 	}
+}
+
+// guess the app root path
+func guessAppRootPath() (string, error) {
+	folder, err := checkAppRoot(osext.ExecutableFolder())
+	if err != nil {
+		return checkAppRoot(os.Getwd())
+	}
+	return folder, nil
 }
