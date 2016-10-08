@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	log.Println("GoaContext init")
+	//log.Println("GoaContext init")
 
 	folder, err := guessAppRootPath()
 	if err != nil {

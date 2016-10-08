@@ -9,12 +9,8 @@ import (
 const GOA_VERSION = "0.0.1"
 const GOA_RELEASE_DATE = "2016-10-08"
 
-func init() {
-	log.Println("Goa init")
-}
-
 func Serve() {
-	log.Println("Goa %s %s service starting at ", GOA_VERSION, GOA_RELEASE_DATE, context.Instance.AppRootPath)
+	log.Printf("Goa %s (%s) service starting at %q\n", GOA_VERSION, GOA_RELEASE_DATE, context.Instance.AppRootPath)
 
 	// setup the api server
 
