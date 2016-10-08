@@ -1,8 +1,9 @@
-package goa
+package context
 
 type GoaContext struct {
 	AppRootPath       string
 	AppConfigFilePath string
+	Config            GoaConfig
 }
 
-var GoaCtx GoaContext
+var Instance GoaContext
