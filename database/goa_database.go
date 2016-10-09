@@ -29,3 +29,18 @@ func Init() {
 
 	Db = db
 }
+
+func GetList(dbList DbList) error {
+	rows, err := Db.Query(dbList.Sql())
+	if err == nil {
+		for rows.Next() {
+			err := dbList.SetItem(rows)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	} else {
+		return nil
+	}
+}
