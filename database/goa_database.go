@@ -10,7 +10,9 @@ import (
 
 var Db *sql.DB = nil
 
-func Init() {
+func init() {
+	log.Println("database init")
+
 	db, err := sql.Open(context.Instance.Config.Database.Type, context.Instance.Config.Database.Url)
 	if err != nil {
 		log.Fatal(err)
