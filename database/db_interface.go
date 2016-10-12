@@ -4,7 +4,11 @@ import (
 	"database/sql"
 )
 
-type DbList interface {
+type DbOperate interface {
 	Sql() string
+}
+
+type DbSelect interface {
+	DbOperate
 	SetItem(rows *sql.Rows) error
 }

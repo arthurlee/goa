@@ -32,11 +32,11 @@ func init() {
 	Db = db
 }
 
-func GetList(dbList DbList) error {
-	rows, err := Db.Query(dbList.Sql())
+func GetList(dbSelect DbSelect) error {
+	rows, err := Db.Query(dbSelect.Sql())
 	if err == nil {
 		for rows.Next() {
-			err := dbList.SetItem(rows)
+			err := dbSelect.SetItem(rows)
 			if err != nil {
 				return err
 			}
@@ -46,3 +46,7 @@ func GetList(dbList DbList) error {
 		return nil
 	}
 }
+
+// func Insert(dbInsert DbInsert) error {
+//
+// }
