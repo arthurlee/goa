@@ -3,6 +3,7 @@ package route
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 )
 
 type GoaHandler func(*GoaResponse)
@@ -18,6 +19,8 @@ func Post(path string, handler GoaHandler) {
 type GoaResponse struct {
 	w *http.ResponseWriter
 	r *http.Request
+
+	Form url.Values
 }
 
 func (goaRes *GoaResponse) SendJson(data interface{}) {

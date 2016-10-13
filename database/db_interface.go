@@ -5,7 +5,8 @@ import (
 )
 
 type DbOperate interface {
-	Sql() string
+	GetSql() string
+	GetArgs() []interface{}
 }
 
 type DbSelect interface {

@@ -35,7 +35,9 @@ func (a tSrvHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	goaRes := GoaResponse{&w, r}
+	r.ParseForm()
+
+	goaRes := GoaResponse{&w, r, r.Form}
 	handler(&goaRes)
 }
 
