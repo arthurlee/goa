@@ -53,7 +53,7 @@ func GetList(dbSelect DbSelect) error {
 		}
 		return nil
 	} else {
-		return nil
+		return err
 	}
 }
 

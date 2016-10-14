@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -14,7 +15,10 @@ type GoaResponse struct {
 }
 
 func (me *GoaResponse) SendJson(data interface{}) {
-	json.NewEncoder(*me.W).Encode(data)
+	err := json.NewEncoder(*me.W).Encode(data)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 type GoaBaseRes struct {
