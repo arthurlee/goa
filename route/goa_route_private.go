@@ -3,6 +3,7 @@ package route
 import (
 	"encoding/json"
 	"errors"
+	"github.com/arthurlee/goa/server"
 	"log"
 	"net/http"
 )
@@ -37,7 +38,7 @@ func (a tSrvHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 
-	goaRes := GoaResponse{&w, r, r.Form}
+	goaRes := server.GoaResponse{&w, r, r.Form}
 	handler(&goaRes)
 }
 
