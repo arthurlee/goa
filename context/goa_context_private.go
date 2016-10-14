@@ -30,18 +30,18 @@ func init() {
 
 }
 
-func (context *GoaContext) setAppRoot(appRoot string) {
-	context.AppRootPath = appRoot
-	context.AppConfigFilePath = path.Join(appRoot, "conf", "goa.yaml")
+func (me *GoaContext) setAppRoot(appRoot string) {
+	me.AppRootPath = appRoot
+	me.AppConfigFilePath = path.Join(appRoot, "conf", "goa.yaml")
 }
 
-func (context *GoaContext) loadConfig() (bool, error) {
-	yamlContent, err := ioutil.ReadFile(context.AppConfigFilePath)
+func (me *GoaContext) loadConfig() (bool, error) {
+	yamlContent, err := ioutil.ReadFile(me.AppConfigFilePath)
 	if err != nil {
 		return false, err
 	}
 
-	err = yaml.Unmarshal(yamlContent, &context.Config)
+	err = yaml.Unmarshal(yamlContent, &me.Config)
 	if err != nil {
 		return false, err
 	}

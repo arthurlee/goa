@@ -25,7 +25,7 @@ type tSrvHandler struct{}
 
 var SrvHandler tSrvHandler
 
-func (a tSrvHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (tSrvHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	log.Println(r.Method, r.URL.Path)
