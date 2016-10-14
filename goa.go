@@ -15,7 +15,7 @@ func showInfo() {
 	log.Println("App root:", context.Instance.AppRootPath)
 	log.Printf("Goa %s (%s) service starting\n", GOA_VERSION, GOA_RELEASE_DATE)
 
-	log.Println("Database open connections:", database.Db.Stats().OpenConnections)
+	log.Println("Goa Database version ", database.GoaDatabaseVersion)
 }
 
 func Serve() {

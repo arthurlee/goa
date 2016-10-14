@@ -8,32 +8,41 @@ import (
 	"os"
 )
 
-var Db *sql.DB = nil
+var GoaDatabaseVersion = "0.1.0"
 
 func init() {
 	log.Println("database init")
-
-	db, err := sql.Open(context.Instance.Config.Database.Type, context.Instance.Config.Database.Url)
+	_, err := sql.Open(context.Instance.Config.Database.Type, context.Instance.Config.Database.Url)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
+	log.Println("database ok")
+}
 
-	log.Println("ping database ...")
+func getDb() (*sql.DB, error) {
+	db, err := sql.Open(context.Instance.Config.Database.Type, context.Instance.Config.Database.Url)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
 
 	err = db.Ping()
 	if err != nil {
 		log.Fatal(err)
-		os.Exit(1)
+		return nil, err
 	}
 
-	log.Println("database ok")
-
-	Db = db
+	return db, nil
 }
 
 func GetList(dbSelect DbSelect) error {
-	rows, err := Db.Query(dbSelect.GetSql(), dbSelect.GetArgs()...)
+	db, err := getDb()
+	if err != nil {
+		return err
+	}
+
+	rows, err := db.Query(dbSelect.GetSql(), dbSelect.GetArgs()...)
 	if err == nil {
 		for rows.Next() {
 			err := dbSelect.SetItem(rows)
@@ -48,7 +57,12 @@ func GetList(dbSelect DbSelect) error {
 }
 
 func Create(dbOperate DbOperate) (int64, int64, error) {
-	result, err := Db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
+	db, err := getDb()
+	if err != nil {
+		return 0, 0, err
+	}
+
+	result, err := db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -60,7 +74,12 @@ func Create(dbOperate DbOperate) (int64, int64, error) {
 }
 
 func Update(dbOperate DbOperate) (int64, error) {
-	result, err := Db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
+	db, err := getDb()
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
 	if err != nil {
 		return 0, err
 	}
@@ -70,7 +89,12 @@ func Update(dbOperate DbOperate) (int64, error) {
 }
 
 func Delete(dbOperate DbOperate) (int64, error) {
-	result, err := Db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
+	db, err := getDb()
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
 	if err != nil {
 		return 0, err
 	}
