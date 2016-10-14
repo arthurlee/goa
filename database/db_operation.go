@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 )
 
 // Database Field type
@@ -85,6 +86,7 @@ func (me *DbFieldList) AddStringField(name string, value string) *DbFieldList {
 	return me.AddField(name, DFT_String, value)
 }
 
+// the insert into sub clause of insert sql
 func (me *DbFieldList) GetFieldNames() string {
 	var names = ""
 	const SEP = ","
@@ -99,6 +101,7 @@ func (me *DbFieldList) GetFieldNames() string {
 	return names
 }
 
+// the value sub clause of insert sql
 func (me *DbFieldList) GetFieldValues() string {
 	var values = ""
 	const SEP = ","
@@ -111,6 +114,21 @@ func (me *DbFieldList) GetFieldValues() string {
 	}
 
 	return values
+}
+
+// the set sub clause of update sql
+func (me *DbFieldList) GetFieldPairs() string {
+	var pairs = ""
+	const SEP = ","
+	count := len(me.Fields)
+	for i := 0; i < count; i++ {
+		pairs += fmt.Sprintf("%s = %s", me.Fields[i].Name, me.Fields[i].GetSqlValue())
+		if i < count-1 {
+			pairs += SEP
+		}
+	}
+
+	return pairs
 }
 
 // ------------------- ConditionList ---------------------
@@ -127,13 +145,24 @@ func (me *DbConditionList) Where(condition string) *DbConditionList {
 	return me
 }
 
+func (me *DbConditionList) WhereEqualString(name string, value string) *DbConditionList {
+	return me.Where(fmt.Sprintf("%s = '%s'", name, value))
+}
+
+func (me *DbConditionList) WhereEqualNumber(name string, value string) *DbConditionList {
+	return me.Where(fmt.Sprintf("%s = %s", name, value))
+}
+
+func (me *DbConditionList) GetConditions() string {
+	return strings.Join(me.Conditions, " and ")
+}
+
 // ------------------- Inserter ---------------------
 
 type DbInserter struct {
 	DbOperation
 	DbTableName
 	DbFieldList
-	DbConditionList
 }
 
 func (me *DbInserter) Done() error {
@@ -159,5 +188,35 @@ func (me *DbInserter) Done() error {
 
 // ------------------- Updater ---------------------
 
-type DbUpdate interface {
+type DbUpdater struct {
+	DbOperation
+	DbTableName
+	DbFieldList
+	DbConditionList
+}
+
+func (me *DbUpdater) Done() error {
+	// Sql can be provided manually, it is ok
+	if len(me.Sql) > 0 {
+		return nil
+	}
+
+	if len(me.TableName) == 0 {
+		return errors.New("please provide the table name")
+	}
+
+	if me.Fields == nil {
+		return errors.New("please provide the fields to update")
+	}
+
+	// update all records is so dangerous, so diable it
+	if me.Conditions == nil {
+		return errors.New("please provide the conditions to update")
+	}
+
+	me.Sql = fmt.Sprintf("UPDATE %s SET %s WHERE %s", me.TableName, me.GetFieldPairs(), me.GetConditions())
+
+	log.Printf("sql: %q", me.Sql)
+
+	return nil
 }

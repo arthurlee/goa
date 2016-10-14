@@ -58,3 +58,13 @@ func Create(dbOperate DbOperate) (int64, int64, error) {
 
 	return rowsInserted, lastInsertId, err
 }
+
+func Update(dbOperate DbOperate) (int64, error) {
+	result, err := Db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsUpdated, err := result.RowsAffected()
+	return rowsUpdated, err
+}
