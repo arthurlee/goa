@@ -68,3 +68,13 @@ func Update(dbOperate DbOperate) (int64, error) {
 	rowsUpdated, err := result.RowsAffected()
 	return rowsUpdated, err
 }
+
+func Delete(dbOperate DbOperate) (int64, error) {
+	result, err := Db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsDeleted, err := result.RowsAffected()
+	return rowsDeleted, err
+}

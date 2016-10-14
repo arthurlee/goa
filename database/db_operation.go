@@ -215,7 +215,35 @@ func (me *DbUpdater) Done() error {
 	}
 
 	me.Sql = fmt.Sprintf("UPDATE %s SET %s WHERE %s", me.TableName, me.GetFieldPairs(), me.GetConditions())
+	log.Printf("sql: %q", me.Sql)
 
+	return nil
+}
+
+// ------------------- Deleter ---------------------
+
+type DbDeleter struct {
+	DbOperation
+	DbTableName
+	DbConditionList
+}
+
+func (me *DbDeleter) Done() error {
+	// Sql can be provided manually, it is ok
+	if len(me.Sql) > 0 {
+		return nil
+	}
+
+	if len(me.TableName) == 0 {
+		return errors.New("please provide the table name")
+	}
+
+	// delete all records is so dangerous, so diable it
+	if me.Conditions == nil {
+		return errors.New("please provide the conditions to update")
+	}
+
+	me.Sql = fmt.Sprintf("DELETE FROM %s WHERE %s", me.TableName, me.GetConditions())
 	log.Printf("sql: %q", me.Sql)
 
 	return nil
