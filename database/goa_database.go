@@ -41,6 +41,7 @@ func GetList(dbSelect DbSelect) error {
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 
 	rows, err := db.Query(dbSelect.GetSql(), dbSelect.GetArgs()...)
 	if err == nil {
@@ -61,6 +62,7 @@ func Create(dbOperate DbOperate) (int64, int64, error) {
 	if err != nil {
 		return 0, 0, err
 	}
+	defer db.Close()
 
 	result, err := db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
 	if err != nil {
@@ -78,6 +80,7 @@ func Update(dbOperate DbOperate) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer db.Close()
 
 	result, err := db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
 	if err != nil {
@@ -93,6 +96,7 @@ func Delete(dbOperate DbOperate) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer db.Close()
 
 	result, err := db.Exec(dbOperate.GetSql(), dbOperate.GetArgs()...)
 	if err != nil {
