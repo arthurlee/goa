@@ -35,3 +35,18 @@ func (me *GoaResponse) SendOK() {
 	res := GoaBaseRes{"0", "ok"}
 	me.SendJson(res)
 }
+
+// ------------------------------------
+// convenient functions
+
+func GetSendOK() func(*GoaResponse) {
+	return func(res *GoaResponse) {
+		res.SendOK()
+	}
+}
+
+func GetSendError(code string, message string) func(*GoaResponse) {
+	return func(res *GoaResponse) {
+		res.SendError(code, message)
+	}
+}
