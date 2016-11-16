@@ -1,22 +1,20 @@
-package context
+package instance
 
 import (
 	"errors"
 	"github.com/arthurlee/goa/file"
+	"github.com/donnie4w/go-logger/logger"
 	"github.com/kardianos/osext"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 )
 
 func init() {
-	//log.Println("GoaContext init")
-
 	folder, err := guessAppRootPath()
 	if err != nil {
-		log.Fatal("Goa: ", err)
+		logger.Fatal("Goa: ", err)
 		os.Exit(1)
 	}
 
@@ -24,18 +22,17 @@ func init() {
 
 	_, err = Instance.loadConfig()
 	if err != nil {
-		log.Fatal("Goa: ", err)
+		logger.Fatal("Goa: ", err)
 		os.Exit(1)
 	}
-
 }
 
-func (me *GoaContext) setAppRoot(appRoot string) {
+func (me *GoaInstance) setAppRoot(appRoot string) {
 	me.AppRootPath = appRoot
 	me.AppConfigFilePath = path.Join(appRoot, "conf", "goa.yaml")
 }
 
-func (me *GoaContext) loadConfig() (bool, error) {
+func (me *GoaInstance) loadConfig() (bool, error) {
 	yamlContent, err := ioutil.ReadFile(me.AppConfigFilePath)
 	if err != nil {
 		return false, err
@@ -46,7 +43,46 @@ func (me *GoaContext) loadConfig() (bool, error) {
 		return false, err
 	}
 
+	me.initLogger()
+
 	return true, nil
+}
+
+func (me *GoaInstance) initLogger() {
+	logConfig := me.Config.Logger
+	logger.SetConsole(logConfig.Console)
+
+	level := logger.INFO
+
+	switch logConfig.Level {
+	case "all":
+		level = logger.ALL
+	case "debug":
+		level = logger.DEBUG
+	case "info":
+		level = logger.INFO
+	case "warn":
+		level = logger.WARN
+	case "error":
+		level = logger.ERROR
+	case "fatal":
+		level = logger.FATAL
+	case "off":
+		level = logger.OFF
+	}
+
+	logger.SetLevel(level)
+
+	if logConfig.Dir == "" {
+		logConfig.Dir = "log"
+	}
+	if logConfig.Filename == "" {
+		logConfig.Filename = "app.log"
+	}
+
+	logger.SetRollingDaily(logConfig.Dir, logConfig.Filename)
+
+	logger.Info("------------------------- start -----------------------")
 }
 
 // check if goa.yaml exists
@@ -63,7 +99,7 @@ func checkAppRoot(folder string, err error) (string, error) {
 		return "", errors.New("Cannot detect the goa app!")
 	} else {
 		// it rarely happened
-		log.Fatal(err)
+		logger.Fatal(err)
 		return "", err
 	}
 }

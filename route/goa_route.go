@@ -1,10 +1,14 @@
 package route
 
 import (
-	"github.com/arthurlee/goa/server"
+//"github.com/arthurlee/goa/server"
 )
 
-type GoaHandler func(*server.GoaResponse)
+// middleware support
+
+func Use() {
+
+}
 
 func Get(path string, handler GoaHandler) {
 	getHandlerMap[path] = handler

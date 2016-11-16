@@ -1,0 +1,11 @@
+---
+server:
+  address: ":5400"
+database:
+  type: mysql
+  url: goa:Goa$1234@/goa_college
+logger:
+  console: true
+  dir: log
+  filename: app.log
+  level: debug
