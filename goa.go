@@ -5,7 +5,7 @@ import (
 	"github.com/arthurlee/goa/instance"
 	"github.com/arthurlee/goa/logger"
 	"github.com/arthurlee/goa/route"
-	"net/http"
+	"github.com/arthurlee/goa/server"
 )
 
 const GOA_VERSION = "0.0.1"
@@ -25,8 +25,9 @@ func Serve() {
 
 	addr := instance.Instance.Config.Server.Address
 	logger.Info("Goa start at address %s", addr)
-	err := http.ListenAndServe(addr, route.SrvHandler)
+	err := server.HttpListenAndServe(addr, route.SrvHandler)
 	if err != nil {
 		logger.FatalError(err)
 	}
+	logger.Info("Goa exit!")
 }
