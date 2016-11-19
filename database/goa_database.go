@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"github.com/arthurlee/goa/instance"
-	"github.com/donnie4w/go-logger/logger"
+	"github.com/arthurlee/goa/logger"
 	_ "github.com/go-sql-driver/mysql"
 	"os"
 )
@@ -14,7 +14,7 @@ func init() {
 	logger.Info("database init")
 	_, err := sql.Open(instance.Instance.Config.Database.Type, instance.Instance.Config.Database.Url)
 	if err != nil {
-		logger.Fatal(err)
+		logger.FatalError(err)
 		os.Exit(1)
 	}
 	logger.Info("database ok")
@@ -23,13 +23,13 @@ func init() {
 func getDb() (*sql.DB, error) {
 	db, err := sql.Open(instance.Instance.Config.Database.Type, instance.Instance.Config.Database.Url)
 	if err != nil {
-		logger.Fatal(err)
+		logger.FatalError(err)
 		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		logger.Fatal(err)
+		logger.FatalError(err)
 		return nil, err
 	}
 
