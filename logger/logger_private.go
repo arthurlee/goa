@@ -124,6 +124,8 @@ func logWrite(message string) {
 		if err != nil {
 			return
 		}
+
+		log_file.today = today
 	}
 
 	_, err := log_file.file.WriteString(message)

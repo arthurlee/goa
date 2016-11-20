@@ -3,8 +3,8 @@ package route
 import (
 	"encoding/json"
 	"errors"
+	"github.com/arthurlee/goa/logger"
 	"github.com/arthurlee/goa/server"
-	"log"
 	"net/http"
 )
 
@@ -13,8 +13,6 @@ type tHandlerMap map[string]GoaHandler
 var getHandlerMap, postHandlerMap tHandlerMap
 
 func init() {
-	//log.Println("Goa route init")
-
 	getHandlerMap = tHandlerMap{}
 	postHandlerMap = tHandlerMap{}
 
@@ -28,7 +26,7 @@ var SrvHandler tSrvHandler
 func (tSrvHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	log.Println(r.Method, r.URL.Path)
+	logger.Info("%s %s", r.Method, r.URL.Path)
 
 	handler, err := getHandler(r.Method, r.URL.Path)
 	if err != nil {
