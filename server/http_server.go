@@ -14,6 +14,7 @@ func HttpListenAndServe(addr string, handler http.Handler) error {
 		return err
 	}
 
+	// exit gracefully
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
 
