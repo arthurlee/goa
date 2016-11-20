@@ -125,6 +125,14 @@ func FatalError(err error) {
 
 // global close
 
+func SetRollingDaily(dir string, filename string) {
+	logSetRollingDaily(dir, filename)
+}
+
+func Open(appRootPath string) {
+	logOpen(appRootPath)
+}
+
 func Close() {
 	logClose()
 }

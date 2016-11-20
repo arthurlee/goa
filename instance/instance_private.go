@@ -53,16 +53,15 @@ func (me *GoaInstance) initLogger() {
 
 	logger.GoaLogger.SetLevelByName(logConfig.Level)
 
-	// if logConfig.Dir == "" {
-	// 	logConfig.Dir = "log"
-	// }
-	// if logConfig.Filename == "" {
-	// 	logConfig.Filename = "app.log"
-	// }
-	//
-	// logger.SetRollingDaily(logConfig.Dir, logConfig.Filename)
+	if logConfig.Dir == "" {
+		logConfig.Dir = "log"
+	}
+	if logConfig.Filename == "" {
+		logConfig.Filename = "app.log"
+	}
 
-	logger.Info("------------------------- start -----------------------")
+	logger.SetRollingDaily(logConfig.Dir, logConfig.Filename)
+	logger.Open(me.AppRootPath)
 }
 
 // check if goa.yaml exists

@@ -9,6 +9,7 @@ package logger
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
 )
@@ -46,18 +47,112 @@ func getNow() string {
 	return t.Format("2006-01-02T15:04:05.000")
 }
 
-func (me *Logger) log(level Level, format string, v ...interface{}) {
-	// TODO: write to file
-	fmt.Printf("%s %s %s\n", getNow(), getLevelName(level), fmt.Sprintf(format, v...))
+func getToday() string {
+	t := time.Now()
+	return t.Format("2006-01-02")
 }
 
-func logClose() {
-	// TODO: close the log file
-	Info("logger close")
+func getTodayInt() int {
+	year, month, day := time.Now().Date()
+	return year*10000 + int(month)*100 + day
 }
 
 // init the module
 
-func init() {
-	// TODO: open the log file
+type logFile struct {
+	appRootPath string
+	dir         string
+	filename    string
+	today       int
+	file        *os.File
+	ch          chan string
+	console     bool
+}
+
+var log_file logFile
+
+func (me *Logger) log(level Level, format string, v ...interface{}) {
+	message := fmt.Sprintf("%s %s [%s] %s\n", getNow(), getLevelName(level), me.name, fmt.Sprintf(format, v...))
+	log_file.ch <- message
+}
+
+func logSetRollingDaily(dir string, filename string) {
+	log_file.dir = dir
+	log_file.filename = filename
+}
+
+func logOpen(appRootPath string) {
+	log_file.appRootPath = appRootPath
+	log_file.ch = make(chan string, 4096)
+	log_file.console = true
+
+	go logHandler(log_file.ch)
+
+	Info("--------------- start ---------------")
+}
+
+func closeFile() {
+	if log_file.file != nil {
+		err := log_file.file.Sync()
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = log_file.file.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+func openNewFile() error {
+	filename := fmt.Sprintf("%s/%s/%s.%s", log_file.appRootPath, log_file.dir, log_file.filename, getToday())
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	log_file.file = file
+	return err
+}
+
+func logWrite(message string) {
+	today := getTodayInt()
+	if log_file.today != today {
+		closeFile()
+
+		err := openNewFile()
+		if err != nil {
+			return
+		}
+	}
+
+	_, err := log_file.file.WriteString(message)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if log_file.console {
+		fmt.Printf(message)
+	}
+}
+
+func logClose() {
+	Info("--------------- end ---------------")
+	close(log_file.ch)
+}
+
+func logHandler(ch chan string) {
+	logWrite("Log handler start")
+
+	for {
+		message, ok := <-ch
+		if !ok {
+			closeFile()
+			break
+		}
+
+		logWrite(message)
+	}
+
+	logWrite("Log handler stop")
 }
