@@ -13,8 +13,7 @@ const GOA_RELEASE_DATE = "2016-10-08"
 
 func showInfo() {
 	logger.Info("App root: %s", instance.Instance.AppRootPath)
-	logger.Info("Goa %s (%s) service starting\n", GOA_VERSION, GOA_RELEASE_DATE)
-
+	logger.Info("Goa %s (%s) service starting", GOA_VERSION, GOA_RELEASE_DATE)
 	logger.Info("Goa Database version %s", database.GoaDatabaseVersion)
 }
 

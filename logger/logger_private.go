@@ -67,6 +67,7 @@ type logFile struct {
 	file        *os.File
 	ch          chan string
 	console     bool
+	stop_ch     chan bool
 }
 
 var log_file logFile
@@ -84,11 +85,10 @@ func logSetRollingDaily(dir string, filename string) {
 func logOpen(appRootPath string) {
 	log_file.appRootPath = appRootPath
 	log_file.ch = make(chan string, 4096)
+	log_file.stop_ch = make(chan bool, 1)
 	log_file.console = true
 
 	go logHandler(log_file.ch)
-
-	Info("--------------- start ---------------")
 }
 
 func closeFile() {
@@ -137,22 +137,29 @@ func logWrite(message string) {
 }
 
 func logClose() {
-	Info("--------------- end ---------------")
 	close(log_file.ch)
+
+	// wait log handler exit
+	_, ok := <-log_file.stop_ch
+	if !ok {
+		fmt.Println("fail to wait log handler exit")
+	}
 }
 
 func logHandler(ch chan string) {
-	logWrite("Log handler start")
+	logWrite(getNow() + " INFO [Goa Logger] --------------- start ---------------\n")
 
 	for {
 		message, ok := <-ch
 		if !ok {
-			closeFile()
 			break
 		}
 
 		logWrite(message)
 	}
 
-	logWrite("Log handler stop")
+	logWrite(getNow() + " INFO [Goa Logger] --------------- end ---------------\n")
+	closeFile()
+
+	log_file.stop_ch <- true
 }

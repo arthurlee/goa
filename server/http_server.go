@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/arthurlee/goa/logger"
 	"net"
 	"net/http"
@@ -20,6 +21,7 @@ func HttpListenAndServe(addr string, handler http.Handler) error {
 
 	go func() {
 		s := <-c
+		fmt.Println("Got signal", s)
 		logger.Warn("Got signal %s", s)
 		listener.Close()
 	}()
