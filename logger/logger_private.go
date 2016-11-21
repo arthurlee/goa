@@ -5,6 +5,10 @@
  *
  */
 
+// TODO: make log dir automatically
+// TODO: console config support
+// TODO: channel capacity config support
+
 package logger
 
 import (

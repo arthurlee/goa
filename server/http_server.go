@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 )
 
 func HttpListenAndServe(addr string, handler http.Handler) error {
@@ -17,7 +18,7 @@ func HttpListenAndServe(addr string, handler http.Handler) error {
 
 	// exit gracefully
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		s := <-c
