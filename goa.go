@@ -14,6 +14,7 @@ const GOA_RELEASE_DATE = "2016-10-08"
 func showInfo() {
 	logger.Info("App root: %s", instance.Instance.AppRootPath)
 	logger.Info("Goa %s (%s) service starting", GOA_VERSION, GOA_RELEASE_DATE)
+	// It is important to load the database package
 	logger.Info("Goa Database version %s", database.GoaDatabaseVersion)
 }
 
@@ -22,8 +23,11 @@ func Serve() {
 
 	showInfo()
 
+	route.Register()
+
 	addr := instance.Instance.Config.Server.Address
 	logger.Info("Goa start at address %s", addr)
+
 	err := server.HttpListenAndServe(addr, route.SrvHandler)
 	if err != nil {
 		logger.FatalError(err)

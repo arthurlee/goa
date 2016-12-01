@@ -9,11 +9,9 @@ type GoaResource interface {
 	GetPath() string
 }
 
-type GoaHandler func(*server.GoaResponse)
-
 // small resource unit, like user/create
 type GoaResourceAction interface {
 	GetResource() GoaResource
 	GetPath() string
-	GetHandler() GoaHandler
+	GetHandler() server.HttpContext
 }
