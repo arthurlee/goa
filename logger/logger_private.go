@@ -77,7 +77,7 @@ type logFile struct {
 var log_file logFile
 
 func (me *Logger) log(level Level, format string, v ...interface{}) {
-	message := fmt.Sprintf("%s %s [%s] %s\n", getNow(), getLevelName(level), me.name, fmt.Sprintf(format, v...))
+	message := fmt.Sprintf("%s %-5s [%s] %s\n", getNow(), getLevelName(level), me.name, fmt.Sprintf(format, v...))
 	log_file.ch <- message
 }
 

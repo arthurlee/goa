@@ -2,18 +2,18 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/arthurlee/goa/logger"
 	"math"
 	"math/rand"
 	"net/http"
 	"net/url"
-	//"strconv"
-	"fmt"
+	"strconv"
 	"time"
 )
 
 type HttpContext struct {
-	W         *http.ResponseWriter
+	W         http.ResponseWriter
 	R         *http.Request
 	Form      url.Values
 	SessionId string
@@ -26,7 +26,7 @@ type HttpContext struct {
 func randStr(maxLen int) string {
 	n := int64(math.Pow10(maxLen))
 	rand.Seed(time.Now().UnixNano())
-	return string(rand.Int63n(n))
+	return strconv.FormatInt(rand.Int63n(n), 10)
 }
 
 func createSessionId() string {
@@ -35,7 +35,7 @@ func createSessionId() string {
 	return fmt.Sprintf("%s%s", d, randStr(7))
 }
 
-func CreateHttpContext(w *http.ResponseWriter, r *http.Request) *HttpContext {
+func CreateHttpContext(w http.ResponseWriter, r *http.Request) *HttpContext {
 	context := HttpContext{W: w, R: r, Form: r.Form}
 
 	context.SessionId = createSessionId()
@@ -55,7 +55,7 @@ func (me *HttpContext) Get(key string) (interface{}, bool) {
 }
 
 func (me *HttpContext) SendJson(data interface{}) {
-	err := json.NewEncoder(*me.W).Encode(data)
+	err := json.NewEncoder(me.W).Encode(data)
 	if err != nil {
 		me.Log.WarnError(err)
 	}

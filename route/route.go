@@ -1,24 +1,14 @@
 package route
 
 import (
-	"github.com/arthurlee/goa/middleware"
+	"github.com/arthurlee/goa/middleware/handler"
 	"github.com/arthurlee/goa/server"
 )
 
-// middleware support
-
-func Use(rm *middleware.Entry, after string) {
-	routeUse(rm, after)
+func Get(path string, h server.HttpHandler) {
+	handler.HttpGet(path, h)
 }
 
-func DumpRoutes() {
-	routeDumpRoutes()
-}
-
-func Get(path string, handler server.HttpHandler) {
-	getHandlerMap[path] = handler
-}
-
-func Post(path string, handler server.HttpHandler) {
-	postHandlerMap[path] = handler
+func Post(path string, h server.HttpHandler) {
+	handler.HttpPost(path, h)
 }
