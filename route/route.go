@@ -2,7 +2,6 @@ package route
 
 import (
 	"github.com/arthurlee/goa/middleware"
-	"github.com/arthurlee/goa/middleware/handler"
 	"github.com/arthurlee/goa/server"
 )
 
@@ -13,13 +12,13 @@ func Use(rm *middleware.Entry) {
 }
 
 func Get(path string, h server.HttpHandler) {
-	handler.HttpGet(path, h)
+	server.HttpGet(path, h)
 }
 
 func Post(path string, h server.HttpHandler) {
-	handler.HttpPost(path, h)
+	server.HttpPost(path, h)
 }
 
 func DumpHttpHandlers() {
-	handler.Dump()
+	server.DumpHttpHandlers()
 }

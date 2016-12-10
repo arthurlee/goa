@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"github.com/arthurlee/goa/logger"
 )
 
@@ -33,7 +34,7 @@ func HttpPost(path string, handler HttpHandler) {
 	handlerMap[path] = HttpHandlerItem{handler}
 }
 
-func Dump() {
+func DumpHttpHandlers() {
 	logger.Info("------------------- http handler list -------------------")
 	for kMethod, kHandlerMap := range methodMap {
 		for kPath, _ := range kHandlerMap {
@@ -58,17 +59,17 @@ func getOrCreateMethodHandlerMap(method string) tHandlerMap {
 }
 
 func GetHandlerItem(method string, path string) (HttpHandlerItem, error) {
-	var item HttpHandlerItem = nil
+	var item HttpHandlerItem = HttpHandlerItem{nil}
 	var err error = nil
 
 	handlerMap, ok := methodMap[method]
 	if ok {
-		handler, err = getHandlerFromMap(handlerMap, path)
+		item, err = getHandlerFromMap(handlerMap, path)
 	} else {
 		err = errors.New("method does not support")
 	}
 
-	return handler, err
+	return item, err
 }
 
 func getHandlerFromMap(handlerMap tHandlerMap, path string) (HttpHandlerItem, error) {
@@ -76,6 +77,6 @@ func getHandlerFromMap(handlerMap tHandlerMap, path string) (HttpHandlerItem, er
 	if ok {
 		return item, nil
 	} else {
-		return nil, errors.New("url does not support")
+		return HttpHandlerItem{nil}, errors.New("url does not support")
 	}
 }

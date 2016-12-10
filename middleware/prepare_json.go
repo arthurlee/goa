@@ -1,4 +1,4 @@
-package handler
+package middleware
 
 import (
 	"github.com/arthurlee/goa/server"
