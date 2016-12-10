@@ -16,7 +16,14 @@ func (tSrvHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	for e := MiddlewareList.Front(); e != nil; e = e.Next() {
 		m := e.Value.(*middleware.Entry)
+
 		context.Log.Debug("Do middleware [%s] ...", m.Name)
-		m.Handler(context)
+		ret, err := m.Handler(context)
+		if ret == server.HR_ERROR {
+			if err != nil {
+				context.SendError("-1", err.Error())
+			}
+			break
+		}
 	}
 }

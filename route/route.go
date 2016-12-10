@@ -19,3 +19,7 @@ func Get(path string, h server.HttpHandler) {
 func Post(path string, h server.HttpHandler) {
 	handler.HttpPost(path, h)
 }
+
+func DumpHttpHandlers() {
+	handler.Dump()
+}

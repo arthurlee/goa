@@ -26,8 +26,8 @@ func UseAfter(rm *middleware.Entry, after string) {
 	}
 }
 
-func DumpRoutes() {
-	logger.Info("------------------- route list -------------------")
+func DumpMiddlewares() {
+	logger.Info("------------------- middleware list -------------------")
 	for e := MiddlewareList.Front(); e != nil; e = e.Next() {
 		m := e.Value.(*middleware.Entry)
 		logger.Info("    %-20s    %s", m.Name, m.Version)

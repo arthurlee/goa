@@ -1,17 +1,17 @@
 package route
 
-import (
-	"github.com/arthurlee/goa/middleware/handler"
-	MLog "github.com/arthurlee/goa/middleware/log"
-)
+import ()
 
 // TODO: add custom callback to register
+// TODO: let logStart and logEnd always execute
 
 func Register() {
-	Use(&MLog.RM_logStart)
-	Use(&handler.RM_jsonPrepare)
-	Use(&handler.RM_httpHandle)
-	Use(&MLog.RM_logEnd)
+	Use(&RM_StartLog)
+	Use(&RM_JsonPrepare)
+	Use(&RM_GetHttpHandler)
+	Use(&RM_CheckParameter)
+	Use(&RM_DoHttpHandler)
+	Use(&RM_EndLog)
 
-	DumpRoutes()
+	DumpMiddlewares()
 }

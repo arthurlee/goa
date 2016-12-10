@@ -1,14 +1,13 @@
 package middleware
 
 import (
-	"github.com/arthurlee/goa/middleware"
 	"github.com/arthurlee/goa/server"
 	"time"
 )
 
-var RM_logEnd = middleware.Entry{"LogEnd", "0.0.1", logEnd}
+var RM_EndLog = Entry{"EndLog", "0.0.1", endLog}
 
-func logEnd(ctx *server.HttpContext) (server.HResult, error) {
+func endLog(ctx *server.HttpContext) (server.HResult, error) {
 	endTime := time.Now()
 	ctx.Set("end_time", endTime)
 
