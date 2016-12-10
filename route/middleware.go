@@ -2,17 +2,13 @@ package route
 
 import (
 	"container/list"
-	// "encoding/json"
-	// "errors"
 	"github.com/arthurlee/goa/logger"
 	"github.com/arthurlee/goa/middleware"
-	// "github.com/arthurlee/goa/server"
-	// "net/http"
 )
 
 var MiddlewareList = list.New()
 
-func Use(rm *middleware.Entry, after string) {
+func UseAfter(rm *middleware.Entry, after string) {
 	var element *list.Element = nil
 	if len(after) > 0 {
 		for e := MiddlewareList.Front(); e != nil; e = e.Next() {
