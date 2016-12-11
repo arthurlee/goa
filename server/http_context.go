@@ -36,7 +36,8 @@ func createSessionId() string {
 }
 
 func CreateHttpContext(w http.ResponseWriter, r *http.Request) *HttpContext {
-	context := HttpContext{W: w, R: r, Form: r.Form}
+	//context := HttpContext{W: w, R: r, Form: r.Form}
+	context := HttpContext{W: w, R: r}
 
 	context.SessionId = createSessionId()
 	context.Log = logger.GetLogger(context.SessionId)
@@ -52,6 +53,11 @@ func (me *HttpContext) Set(key string, value interface{}) {
 func (me *HttpContext) Get(key string) (interface{}, bool) {
 	v, ok := me.items[key]
 	return v, ok
+}
+
+func (me *HttpContext) ParseParam() {
+	me.R.ParseForm()
+	me.Form = me.R.Form
 }
 
 func (me *HttpContext) SendJson(data interface{}) {

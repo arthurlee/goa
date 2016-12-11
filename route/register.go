@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/arthurlee/goa/middleware"
+	"github.com/arthurlee/goa/middleware/checkparam"
 )
 
 // TODO: add custom callback to register
@@ -11,7 +12,7 @@ func Register() {
 	Use(&middleware.RM_StartLog)
 	Use(&middleware.RM_JsonPrepare)
 	Use(&middleware.RM_GetHttpHandler)
-	Use(&middleware.RM_CheckParameter)
+	Use(&checkparam.RM_CheckParameter)
 	Use(&middleware.RM_DoHttpHandler)
 	Use(&middleware.RM_EndLog)
 
