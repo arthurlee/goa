@@ -38,6 +38,6 @@ func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) error {
 	return nil
 }
 
-func FixedLen(name string, errorCode string, length int) CheckBase {
+func FixedLen(name string, length int, errorCode string) CheckBase {
 	return &FixedLenCheckItem{CheckItem{name, errorCode, HandlerFixedLen}, length}
 }
