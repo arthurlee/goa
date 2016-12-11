@@ -43,7 +43,7 @@ func Add(path string, item *CheckItem) {
 
 func MultiAdd(path string, items []*CheckItem) {
 	checkItemList := getOrCreateCheckItemMap(path)
-	for item := range items {
+	for _, item := range items {
 		checkItemList.PushBack(item)
 	}
 }
