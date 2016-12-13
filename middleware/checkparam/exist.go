@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/arthurlee/goa/server"
-	"strings"
+	//"strings"
 )
 
 //
@@ -12,12 +12,12 @@ import (
 //
 
 func HandlerExist(item CheckBase, ctx *server.HttpContext) error {
-	param_name := item.GetName()
+	name := item.GetName()
 
-	val := strings.Join(ctx.Form[param_name], "")
-	ctx.Log.Debug("HandlerExist: %s = %s", param_name, val)
+	val := ctx.R.Form.Get(name)
+	ctx.Log.Debug("HandlerExist: %s = '%s'", name, val)
 	if len(val) == 0 {
-		return errors.New(fmt.Sprintf("parameter %s is empty", param_name))
+		return errors.New(fmt.Sprintf("parameter %s is empty", name))
 	}
 
 	return nil

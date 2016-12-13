@@ -7,15 +7,15 @@ import (
 	"math"
 	"math/rand"
 	"net/http"
-	"net/url"
+	//	"net/url"
 	"strconv"
 	"time"
 )
 
+// Form      url.Values
 type HttpContext struct {
 	W         http.ResponseWriter
 	R         *http.Request
-	Form      url.Values
 	SessionId string
 	Log       *logger.Logger
 	items     map[string]interface{}
@@ -57,7 +57,7 @@ func (me *HttpContext) Get(key string) (interface{}, bool) {
 
 func (me *HttpContext) ParseParam() {
 	me.R.ParseForm()
-	me.Form = me.R.Form
+	//me.Form = me.R.Form
 }
 
 func (me *HttpContext) SendJson(data interface{}) {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/arthurlee/goa/server"
-	"strings"
+	//"strings"
 )
 
 //
@@ -27,7 +27,8 @@ func (me *FixedLenCheckItem) GetFixedLen() int {
 func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) error {
 	name := item.GetName()
 
-	val := strings.Join(ctx.Form[name], "")
+	//val := strings.Join(ctx.Form[name], "")
+	val := ctx.R.Form.Get(name)
 	ctx.Log.Debug("HandlerFixedLen: %s = %s", name, val)
 
 	fixedLen := item.(IFixedLen)
