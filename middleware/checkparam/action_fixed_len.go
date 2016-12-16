@@ -24,7 +24,7 @@ func (me *FixedLenCheckItem) GetFixedLen() int {
 	return me.fixedLen
 }
 
-func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) error {
+func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) (interface{}, error) {
 	name := item.GetName()
 
 	//val := strings.Join(ctx.Form[name], "")
@@ -33,10 +33,10 @@ func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) error {
 
 	fixedLen := item.(IFixedLen)
 	if len(val) != fixedLen.GetFixedLen() {
-		return errors.New(fmt.Sprintf("parameter %s's length is not %d", name, fixedLen.GetFixedLen()))
+		return nil, errors.New(fmt.Sprintf("parameter %s's length is not %d", name, fixedLen.GetFixedLen()))
 	}
 
-	return nil
+	return val, nil
 }
 
 func FixedLen(name string, length int, errorCode string) CheckBase {

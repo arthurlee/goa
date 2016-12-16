@@ -18,7 +18,7 @@ func checkParameter(ctx *server.HttpContext) (server.HResult, error) {
 	if ok {
 		for e := checkItems.Front(); e != nil; e = e.Next() {
 			item := e.Value.(CheckBase)
-			err := item.GetHandler()(item, ctx)
+			_, err := item.GetHandler()(item, ctx)
 			if err != nil {
 				return server.HR_ERROR, err
 			}

@@ -31,7 +31,7 @@ func (me *RegexCheckItem) GetPattern() string {
 	return me.pattern
 }
 
-func HandlerRegex(item CheckBase, ctx *server.HttpContext) error {
+func HandlerRegex(item CheckBase, ctx *server.HttpContext) (interface{}, error) {
 	name := item.GetName()
 
 	val := ctx.R.Form.Get(name)
@@ -39,10 +39,10 @@ func HandlerRegex(item CheckBase, ctx *server.HttpContext) error {
 
 	regex := item.(IRegex)
 	if !regex.IsMatch(val) {
-		return errors.New(fmt.Sprintf("parameter %s does match the pattern '%s' !", name, regex.GetPattern()))
+		return nil, errors.New(fmt.Sprintf("parameter %s does match the pattern '%s' !", name, regex.GetPattern()))
 	}
 
-	return nil
+	return val, nil
 }
 
 func Regex(name string, pattern string, errorCode string) CheckBase {
