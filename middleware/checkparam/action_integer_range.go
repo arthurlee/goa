@@ -7,7 +7,7 @@ import (
 )
 
 //
-// check if the parameter is exist, is specific length
+// check if the parameter is integer and in the range of min and max
 //
 
 type IRange interface {
