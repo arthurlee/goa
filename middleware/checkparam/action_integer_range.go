@@ -30,13 +30,18 @@ func (me *IntegerRangeCheckItem) GetMax() int64 {
 }
 
 func HandlerIntegerRange(item CheckBase, ctx *server.HttpContext) (interface{}, error) {
+	intRange := item.(IRange)
 	val, err := HandlerInteger(item, ctx)
 	if err != nil {
-		return val, err
+		return val, errors.New(fmt.Sprintf("parameter %s is not between %d and %d !", item.GetName(), intRange.GetMin(), intRange.GetMax()))
+	}
+
+	_, ok := val.(string)
+	if !item.IsRequired() && ok {
+		return val, nil
 	}
 
 	iVal := val.(int64)
-	intRange := item.(IRange)
 	if iVal < intRange.GetMin() || iVal > intRange.GetMax() {
 		return nil, errors.New(fmt.Sprintf("parameter %s is not between %d and %d !", item.GetName(), intRange.GetMin(), intRange.GetMax()))
 	}
@@ -44,6 +49,6 @@ func HandlerIntegerRange(item CheckBase, ctx *server.HttpContext) (interface{}, 
 	return val, err
 }
 
-func IntegerRange(name string, min int64, max int64, errorCode string) CheckBase {
-	return &IntegerRangeCheckItem{RegexCheckItem{CheckItem{name, errorCode, HandlerIntegerRange}, "^\\d+$"}, min, max}
+func IntegerRange(name string, min int64, max int64, errorCode string, required bool) CheckBase {
+	return &IntegerRangeCheckItem{RegexCheckItem{CheckItem{name, errorCode, required, HandlerIntegerRange}, "^\\d+$"}, min, max}
 }

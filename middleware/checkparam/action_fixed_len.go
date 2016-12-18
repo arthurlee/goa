@@ -31,6 +31,10 @@ func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) (interface{}, erro
 	val := ctx.R.Form.Get(name)
 	ctx.Log.Debug("HandlerFixedLen: %s = %s", name, val)
 
+	if !item.IsRequired() && len(val) == 0 {
+		return val, nil
+	}
+
 	fixedLen := item.(IFixedLen)
 	if len(val) != fixedLen.GetFixedLen() {
 		return nil, errors.New(fmt.Sprintf("parameter %s's length is not %d", name, fixedLen.GetFixedLen()))
@@ -39,6 +43,6 @@ func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) (interface{}, erro
 	return val, nil
 }
 
-func FixedLen(name string, length int, errorCode string) CheckBase {
-	return &FixedLenCheckItem{CheckItem{name, errorCode, HandlerFixedLen}, length}
+func FixedLen(name string, length int, errorCode string, required bool) CheckBase {
+	return &FixedLenCheckItem{CheckItem{name, errorCode, required, HandlerFixedLen}, length}
 }

@@ -23,6 +23,6 @@ func HandlerMobilephone(item CheckBase, ctx *server.HttpContext) (interface{}, e
 	return val, nil
 }
 
-func Mobilephone(name string, errorCode string) CheckBase {
-	return &RegexCheckItem{CheckItem{name, errorCode, HandlerMobilephone}, "^\\d{11}$"}
+func Mobilephone(name string, errorCode string, required bool) CheckBase {
+	return &RegexCheckItem{CheckItem{name, errorCode, required, HandlerMobilephone}, "^\\d{11}$"}
 }

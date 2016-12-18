@@ -5,6 +5,7 @@ import ()
 type CheckItem struct {
 	name      string
 	errorCode string
+	required  bool
 	handler   CheckHandler
 }
 
@@ -20,6 +21,10 @@ func (me *CheckItem) GetHandler() CheckHandler {
 	return me.handler
 }
 
-func GenCheckItem(name string, errorCode string, handler CheckHandler) CheckBase {
-	return &CheckItem{name, errorCode, handler}
+func (me *CheckItem) IsRequired() bool {
+	return me.required
+}
+
+func GenCheckItem(name string, errorCode string, required bool, handler CheckHandler) CheckBase {
+	return &CheckItem{name, errorCode, required, handler}
 }
