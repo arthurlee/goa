@@ -39,3 +39,13 @@ func (me *HttpParam) GetInt(key string) (int, bool) {
 	val, ok := v.(int)
 	return val, ok
 }
+
+func (me *HttpParam) GetInt64(key string) (int64, bool) {
+	v, ok := me.Get(key)
+	if !ok {
+		return 0, ok
+	}
+
+	val, ok := v.(int64)
+	return val, ok
+}

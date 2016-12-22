@@ -19,6 +19,7 @@ type HttpContext struct {
 	SessionId string
 	Log       *logger.Logger
 	items     map[string]interface{}
+	Params    HttpParam
 }
 
 // randStr(1) => 0 ~ 9
@@ -42,6 +43,7 @@ func CreateHttpContext(w http.ResponseWriter, r *http.Request) *HttpContext {
 	context.SessionId = createSessionId()
 	context.Log = logger.GetLogger(context.SessionId)
 	context.items = make(map[string]interface{}, 20)
+	context.Params = HttpParamCreate()
 
 	return &context
 }

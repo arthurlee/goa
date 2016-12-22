@@ -18,10 +18,13 @@ func checkParameter(ctx *server.HttpContext) (server.HResult, error) {
 	if ok {
 		for e := checkItems.Front(); e != nil; e = e.Next() {
 			item := e.Value.(CheckBase)
-			_, err := item.GetHandler()(item, ctx)
+			val, err := item.GetHandler()(item, ctx)
 			if err != nil {
 				return server.HR_ERROR, err
 			}
+
+			// store value to parameters with specific type
+			ctx.Params.Set(item.GetName(), val)
 		}
 	}
 
