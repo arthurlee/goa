@@ -5,6 +5,7 @@ import (
 	"github.com/arthurlee/goa/instance"
 	"github.com/arthurlee/goa/logger"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"os"
 )
 
@@ -20,24 +21,30 @@ func init() {
 	logger.Info("database ok")
 }
 
-func getDb() (*sql.DB, error) {
-	db, err := sql.Open(instance.Instance.Config.Database.Type, instance.Instance.Config.Database.Url)
+type Db struct {
+	*sqlx.DB
+	Log *logger.Logger
+}
+
+func GetDb(log *logger.Logger) (*Db, error) {
+	sqlDb, err := sqlx.Connect(instance.Instance.Config.Database.Type, instance.Instance.Config.Database.Url)
 	if err != nil {
 		logger.FatalError(err)
 		return nil, err
 	}
 
-	err = db.Ping()
-	if err != nil {
-		logger.FatalError(err)
-		return nil, err
-	}
+	// err = sqlDb.Ping()
+	// if err != nil {
+	// 	logger.FatalError(err)
+	// 	return nil, err
+	// }
 
-	return db, nil
+	goaDb := Db{sqlDb, log}
+	return &goaDb, nil
 }
 
 func GetList(dbSelect DbSelect) error {
-	db, err := getDb()
+	db, err := GetDb(nil)
 	if err != nil {
 		return err
 	}
@@ -58,7 +65,7 @@ func GetList(dbSelect DbSelect) error {
 }
 
 func Create(dbOperate DbOperate) (int64, int64, error) {
-	db, err := getDb()
+	db, err := GetDb(nil)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -76,7 +83,7 @@ func Create(dbOperate DbOperate) (int64, int64, error) {
 }
 
 func Update(dbOperate DbOperate) (int64, error) {
-	db, err := getDb()
+	db, err := GetDb(nil)
 	if err != nil {
 		return 0, err
 	}
@@ -92,7 +99,7 @@ func Update(dbOperate DbOperate) (int64, error) {
 }
 
 func Delete(dbOperate DbOperate) (int64, error) {
-	db, err := getDb()
+	db, err := GetDb(nil)
 	if err != nil {
 		return 0, err
 	}
