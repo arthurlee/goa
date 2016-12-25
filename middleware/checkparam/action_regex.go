@@ -37,10 +37,6 @@ func HandlerRegex(item CheckBase, ctx *server.HttpContext) (interface{}, error) 
 	val := ctx.R.Form.Get(name)
 	ctx.Log.Debug("HandlerRegex: %s = %s", name, val)
 
-	if !item.IsRequired() && len(val) == 0 {
-		return val, nil
-	}
-
 	regex := item.(IRegex)
 	if !regex.IsMatch(val) {
 		return nil, errors.New(fmt.Sprintf("parameter %s does match the pattern '%s' !", name, regex.GetPattern()))

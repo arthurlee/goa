@@ -19,12 +19,14 @@ func checkParameter(ctx *server.HttpContext) (server.HResult, error) {
 		for e := checkItems.Front(); e != nil; e = e.Next() {
 			item := e.Value.(CheckBase)
 			val, err := item.GetHandler()(item, ctx)
-			if err != nil {
+			if err != nil && item.IsRequired() {
 				return server.HR_ERROR, err
 			}
 
 			// store value to parameters with specific type
-			ctx.Params.Set(item.GetName(), val)
+			if err == nil {
+				ctx.Params.Set(item.GetName(), val)
+			}
 		}
 	}
 

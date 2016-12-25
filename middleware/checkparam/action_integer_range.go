@@ -36,11 +36,6 @@ func HandlerIntegerRange(item CheckBase, ctx *server.HttpContext) (interface{}, 
 		return val, errors.New(fmt.Sprintf("parameter %s is not between %d and %d !", item.GetName(), intRange.GetMin(), intRange.GetMax()))
 	}
 
-	_, ok := val.(string)
-	if !item.IsRequired() && ok {
-		return val, nil
-	}
-
 	iVal := val.(int64)
 	if iVal < intRange.GetMin() || iVal > intRange.GetMax() {
 		return nil, errors.New(fmt.Sprintf("parameter %s is not between %d and %d !", item.GetName(), intRange.GetMin(), intRange.GetMax()))

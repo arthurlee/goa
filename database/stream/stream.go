@@ -28,7 +28,9 @@ type DBStream struct {
 	tableName      string
 	fields         []string
 	conditions     []string
-	maxRecordCount int
+	maxRecordCount int64
+	start          int64
+	size           int64
 }
 
 func Instance(db *database.Db, creator Creator) *DBStream {
@@ -37,6 +39,8 @@ func Instance(db *database.Db, creator Creator) *DBStream {
 	s.db = db
 	s.creator = creator
 	s.maxRecordCount = dftMaxRecordCount
+	s.start = 0
+	s.size = dftMaxRecordCount
 
 	return &s
 }
@@ -63,6 +67,20 @@ func (me *DBStream) Where(conditions []string) *DBStream {
 	return me
 }
 
+func (me *DBStream) Page(pageNum int64, pageSize int64) *DBStream {
+	me.start = pageNum * pageSize
+	me.size = pageSize
+	return me
+}
+
+func (me *DBStream) Limit(start int64, size int64) *DBStream {
+	me.start = start
+	me.size = size
+	return me
+}
+
+// really action goes here
+
 func (me *DBStream) genSelect(buffer *bytes.Buffer) {
 	buffer.WriteString("SELECT ")
 	if me.fields != nil && len(me.fields) > 0 {
@@ -79,9 +97,16 @@ func (me *DBStream) genWhere(buffer *bytes.Buffer) {
 	}
 }
 
+func (me *DBStream) genLimit(buffer *bytes.Buffer) {
+	// mysql only
+	buffer.WriteString(fmt.Sprintf("\nLIMIT %d, %d", me.start, me.size))
+}
+
 func (me *DBStream) Done() (interface{}, error) {
 	log := me.db.Log
 	log.Debug("Table Name = %s", me.tableName)
+
+	// gen sql clause
 
 	var buffer bytes.Buffer
 
@@ -93,16 +118,38 @@ func (me *DBStream) Done() (interface{}, error) {
 		buffer.WriteString("\nLIMIT 1") // mysql
 	}
 
+	if me.action == actionSelect {
+		me.genLimit(&buffer)
+	}
+
 	sql := buffer.String()
 	log.Debug("sql = \n%s", sql)
 
-	record := me.creator()
-	err := me.db.Get(record, sql)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
+	// do sql
+
+	if me.action == actionSelectOne {
+		record := me.creator(CREATE_RECORD)
+		err := me.db.Get(record, sql)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		fmt.Println(record)
+		return record, nil
 	}
 
-	fmt.Println(record)
-	return record, nil
+	if me.action == actionSelect {
+		records := me.creator(CREATE_LIST)
+		err := me.db.Select(records, sql)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		fmt.Println(records)
+		return records, nil
+	}
+
+	return nil, nil
 }

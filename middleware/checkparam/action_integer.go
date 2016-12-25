@@ -19,10 +19,6 @@ func HandlerInteger(item CheckBase, ctx *server.HttpContext) (interface{}, error
 		return val, err
 	}
 
-	if !item.IsRequired() && len(val.(string)) == 0 {
-		return val, nil
-	}
-
 	iVal, err := strconv.ParseInt(val.(string), 10, 64)
 	return iVal, err
 }

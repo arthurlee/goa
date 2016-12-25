@@ -27,13 +27,8 @@ func (me *FixedLenCheckItem) GetFixedLen() int {
 func HandlerFixedLen(item CheckBase, ctx *server.HttpContext) (interface{}, error) {
 	name := item.GetName()
 
-	//val := strings.Join(ctx.Form[name], "")
 	val := ctx.R.Form.Get(name)
 	ctx.Log.Debug("HandlerFixedLen: %s = %s", name, val)
-
-	if !item.IsRequired() && len(val) == 0 {
-		return val, nil
-	}
 
 	fixedLen := item.(IFixedLen)
 	if len(val) != fixedLen.GetFixedLen() {
