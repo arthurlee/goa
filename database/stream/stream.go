@@ -28,6 +28,7 @@ type DBStream struct {
 	tableName      string
 	fields         []string
 	conditions     []string
+	orders         []string
 	maxRecordCount int64
 	start          int64
 	size           int64
@@ -67,6 +68,11 @@ func (me *DBStream) Where(conditions []string) *DBStream {
 	return me
 }
 
+func (me *DBStream) Order(orders []string) *DBStream {
+	me.orders = orders
+	return me
+}
+
 func (me *DBStream) Page(pageNum int64, pageSize int64) *DBStream {
 	me.start = pageNum * pageSize
 	me.size = pageSize
@@ -97,6 +103,12 @@ func (me *DBStream) genWhere(buffer *bytes.Buffer) {
 	}
 }
 
+func (me *DBStream) genOrder(buffer *bytes.Buffer) {
+	if me.orders != nil && len(me.orders) > 0 {
+		buffer.WriteString("\nORDER BY " + strings.Join(me.orders, ", "))
+	}
+}
+
 func (me *DBStream) genLimit(buffer *bytes.Buffer) {
 	// mysql only
 	buffer.WriteString(fmt.Sprintf("\nLIMIT %d, %d", me.start, me.size))
@@ -114,6 +126,7 @@ func (me *DBStream) Done() (interface{}, error) {
 		me.genSelect(&buffer)
 	}
 	me.genWhere(&buffer)
+	me.genOrder(&buffer)
 	if me.action == actionSelectOne {
 		buffer.WriteString("\nLIMIT 1") // mysql
 	}
