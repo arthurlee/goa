@@ -1,7 +1,10 @@
 package instance
 
 type GoaConfigServer struct {
-	Address string `yaml:"address"`
+	Address      string `yaml:"address"`
+	HttpsAddress string `yaml:"https_address"`
+	CertFile     string `yaml:"cert_file"`
+	KeyFile      string `yaml:"key_file"`
 }
 
 type GoaConfigDatabase struct {

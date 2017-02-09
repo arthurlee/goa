@@ -15,3 +15,7 @@ Please get the documents from [goa_doc](https://github.com/arthurlee/goa-doc)
 
 # Samples
 Please get the samples and sql scripts from [goa_doc](https://github.com/arthurlee/goa-doc)
+
+# Generate SSL key files
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem
+

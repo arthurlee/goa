@@ -43,6 +43,9 @@ func (me *GoaInstance) loadConfig() (bool, error) {
 		return false, err
 	}
 
+	me.Config.Server.CertFile = path.Join(me.AppRootPath, "conf", me.Config.Server.CertFile)
+	me.Config.Server.KeyFile = path.Join(me.AppRootPath, "conf", me.Config.Server.KeyFile)
+
 	me.initLogger()
 
 	return true, nil

@@ -1,6 +1,10 @@
 ---
 server:
   address: ":5400"
+  https_address: ":5443"
+  cert_file: cert.pem
+  key_file: key.pem
+  
 database:
   type: mysql
   url: goa:Goa$1234@/goa_college
