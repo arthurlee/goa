@@ -109,7 +109,13 @@ func closeFile() {
 }
 
 func openNewFile() error {
-	filename := fmt.Sprintf("%s/%s/%s.%s", log_file.appRootPath, log_file.dir, log_file.filename, getToday())
+	path := fmt.Sprintf("%s/%s", log_file.appRootPath, log_file.dir)
+	_, err := os.Stat(path)
+	if err != nil {
+		os.Mkdir(path, 0755)
+	}
+
+	filename := fmt.Sprintf("%s/%s/%s-%s.log", log_file.appRootPath, log_file.dir, log_file.filename, getToday())
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
