@@ -141,6 +141,8 @@ func logWrite(message string) {
 	_, err := log_file.file.WriteString(message)
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		log_file.file.Sync() // maybe has performance lost
 	}
 
 	if log_file.console {
